@@ -57,7 +57,7 @@ func run() error {
 
 func foo(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
-	payload, err := createPayload()
+	payload, err := createData()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -73,13 +73,26 @@ func foo(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	w.Write(js)
 }
 
-func createPayload() ([]map[string]interface{}, error) {
+func createData() (map[string]interface{}, error) {
+	max := 0
+	min := 100 * 100
+	data := make(map[string]interface{})
+	data["created"] = time.Now()
 	payloads := make([]map[string]interface{}, 0)
 	for i := 1; i < 82; i++ {
 		payload := make(map[string]interface{})
 		j := rand.Intn(100) * 100
+		if j > max {
+			max = j
+		}
+		if j < min {
+			min = j
+		}
 		payload[fmt.Sprintf("entry-%d", i)] = j
 		payloads = append(payloads, payload)
 	}
-	return payloads, nil
+	data["max"] = max
+	data["min"] = min
+	data["entries"] = payloads
+	return data, nil
 }
