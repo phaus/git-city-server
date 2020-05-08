@@ -88,7 +88,8 @@ func createData() (map[string]interface{}, error) {
 		if j < min {
 			min = j
 		}
-		payload[fmt.Sprintf("entry-%d", i)] = j
+		payload["name"] = fmt.Sprintf("entry-%d", i)
+		payload["count"] = j
 		payloads = append(payloads, payload)
 	}
 	data["max"] = max
